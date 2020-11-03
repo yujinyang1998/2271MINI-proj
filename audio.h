@@ -1,3 +1,4 @@
+#pragma once
 #define NOTE_B0  31
 #define NOTE_C1  33
 #define NOTE_CS1 35
@@ -125,27 +126,9 @@ int melody[] = {
   NOTE_A5, NOTE_AS5, NOTE_A5, NOTE_AS5
  };
 
- 
-int CoffinDance[] = {
-  NOTE_G5, NOTE_G5, NOTE_G5, NOTE_G5,
-  NOTE_C5, NOTE_AS4, NOTE_A4, NOTE_F4,
-  NOTE_G4, 0, NOTE_G4, NOTE_D5,
-  NOTE_C5, 0, NOTE_AS4, 0,
-  NOTE_A4, 0, NOTE_A4, NOTE_A4,
-  NOTE_C5, 0, NOTE_AS4, NOTE_A4,
-  NOTE_G4, 0, NOTE_G4, NOTE_AS5,
-  NOTE_A5, NOTE_AS5, NOTE_A5, NOTE_AS5,
-  NOTE_G4, 0, NOTE_G4, NOTE_AS5,
-  NOTE_A5, NOTE_AS5, NOTE_A5, NOTE_AS5,
-  NOTE_G4, 0, NOTE_G4, NOTE_D5,
-  NOTE_C5, 0, NOTE_AS4, 0,
-  NOTE_A4, 0, NOTE_A4, NOTE_A4,
-  NOTE_C5, 0, NOTE_AS4, NOTE_A4,
-  NOTE_G4, 0, NOTE_G4, NOTE_AS5,
-  NOTE_A5, NOTE_AS5, NOTE_A5, NOTE_AS5,
-  NOTE_G4, 0, NOTE_G4, NOTE_AS5,
-  NOTE_A5, NOTE_AS5, NOTE_A5, NOTE_AS5
-};
+int start[] = {NOTE_B0, 0, NOTE_B0, 0, NOTE_B0, 0,NOTE_B0, 0, NOTE_B0, 0};
+
+int stop[] = {NOTE_DS8, 0, NOTE_DS8, 0, NOTE_DS8, 0, NOTE_DS8, 0, NOTE_DS8, 0,};
 
 // note durations: 4 = quarter note, 8 = eighth note, etc.:
 int noteDurations[] = {
