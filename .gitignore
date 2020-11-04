@@ -1,14 +1,17 @@
-FEAFAE.uvguix.yujin
-FEAFAE.uvoptx
-FEAFAE.uvprojx
-Listings/FEAFAE.map
+lol.c
+lol.uvguix.yuxin
+lol.uvoptx
+lol.uvprojx
+Listings/lol.map
 Listings/startup_mkl25z4.lst
-Objects/ExtDll.iex
-Objects/FEAFAE.axf
-Objects/FEAFAE.build_log.htm
-Objects/FEAFAE.htm
-Objects/FEAFAE.lnp
-Objects/FEAFAE_Target 1.dep
+Objects/init.crf
+Objects/init.d
+Objects/init.o
+Objects/lol.axf
+Objects/lol.build_log.htm
+Objects/lol.htm
+Objects/lol.lnp
+Objects/lol_Target 1.dep
 Objects/main.crf
 Objects/main.d
 Objects/main.o
@@ -28,4 +31,6 @@ RTE/CMSIS/RTX_Config.c
 RTE/CMSIS/RTX_Config.h
 RTE/Device/MKL25Z128xxx4/startup_MKL25Z4.s
 RTE/Device/MKL25Z128xxx4/system_MKL25Z4.c
-EventRecorderStub.scvd
+.vscode/c_cpp_properties.json
+.vscode/keil-assistant.log
+.vscode/uv4.log.lock
