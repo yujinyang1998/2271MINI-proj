@@ -1,27 +1,19 @@
 #include "MKL25Z4.h" 
-#define PTD0_Pin 0 	//Front Left
-#define PTD1_Pin 1	//Front Right
-#define PTD2_Pin 2	//Back Left
-#define PTD3_Pin 3	//Back Right
-#define PTC1_Pin 1  //buzzer
-#define PTC2_Pin 2  //buzzer
+#define PTB0_Pin 0  //buzzer
 
 void InitBuzzer(void) {
 	// Configure MUX settings to make pins to ALT3: TPM1_CH0 and TPM1_CH1
   // Enable Clock Gating for PORTB
                // Device header
-  SIM_SCGC5 |= SIM_SCGC5_PORTC_MASK;
+  SIM_SCGC5 |= SIM_SCGC5_PORTB_MASK;
   
   // Configure Mode 3 for PWM pin operation
   // Alternative 3
-  PORTC->PCR[PTC1_Pin] &= ~PORT_PCR_MUX_MASK;
-  PORTC->PCR[PTC1_Pin] |= PORT_PCR_MUX(4);
-  
-  PORTC->PCR[PTC2_Pin] &= ~PORT_PCR_MUX_MASK;
-  PORTC->PCR[PTC2_Pin] |= PORT_PCR_MUX(4);
+  PORTB->PCR[PTB0_Pin] &= ~PORT_PCR_MUX_MASK;
+  PORTB->PCR[PTB0_Pin] |= PORT_PCR_MUX(3);
   
   // Enable Clock Gating for Timer1
-  SIM->SCGC6 |= SIM_SCGC6_TPM0_MASK;
+  SIM->SCGC6 |= SIM_SCGC6_TPM1_MASK;
   
   // Select clock for TPM module
   SIM->SOPT2 &= ~SIM_SOPT2_TPMSRC_MASK;
@@ -31,21 +23,17 @@ void InitBuzzer(void) {
   //TPM1->MOD = 3276;
   
   // Set Modulo Value 48000000 / (128*50) = 50 Hz (50% duty cycle)
-  TPM0->MOD = 7500; 
+  TPM1->MOD = 7500; 
   
   // Edge-Aligned PWM
   // Update SnC register: CMOD = 01, PS=111 (128)
-  TPM0->SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
-  TPM0->SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(7));
-  TPM0->SC &= ~(TPM_SC_CPWMS_MASK);
+  TPM1->SC &= ~((TPM_SC_CMOD_MASK) | (TPM_SC_PS_MASK));
+  TPM1->SC |= (TPM_SC_CMOD(1) | TPM_SC_PS(7));
+  TPM1->SC &= ~(TPM_SC_CPWMS_MASK);
   
   // Enable PWM on TPM1 Channel 0 -> PTB0
-  TPM0_C0SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
-  TPM0_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
-  
-  // Enable PWM on TPM1 Channel 1 -> PTB1
-  TPM0_C1SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
-  TPM0_C1SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
+  TPM1_C0SC &= ~(TPM_CnSC_ELSB_MASK | TPM_CnSC_ELSA_MASK | TPM_CnSC_MSB_MASK | TPM_CnSC_MSA_MASK);
+  TPM1_C0SC |= (TPM_CnSC_ELSB(1) | TPM_CnSC_MSB(1));
 }
 	
 //DONE

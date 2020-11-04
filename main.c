@@ -9,11 +9,6 @@
 
 #define CONNECTION_START 6
 #define MAZE_END 5
-#define ROBOT_FORWARD 1
-#define ROBOT_BACKWARD 2
-#define ROBOT_LEFT 3
-#define ROBOT_RIGHT 4
-#define ROBOT_STOP 0
 
 #define AUDIO_START 0
 #define AUDIO_STOP 1
@@ -59,13 +54,13 @@ void tBrain (void *argument) {
 	for(;;) {
 		osEventFlagsWait(dataFlag, 0x0001, osFlagsWaitAny, osWaitForever);
 		osEventFlagsClear(dataFlag, 0x0001);
-		if (rxData >> 6 == 1) {
+		if (rxData >> 5 == 1) {
 			osEventFlagsSet(special_event_flag, 0x0004);
 		}
-		if (rxData >> 5 == 1) {
-			dir |= (rxData & 0b11111);
+		if (rxData & 0b1) {
+			dir |= (rxData & 0b1111);
 		} else {
-			dir &= ~(rxData & 0b11111);
+			dir &= ~(rxData & 0b1111);
 		}
 		
 		osEventFlagsSet(motorFlag, 0x0001);
@@ -77,7 +72,7 @@ void tLed (void *argument) {
 
 void tMotor (void *argument) {
 	for(;;) {
-		
+		move(dir);
 	}
 }
 
@@ -115,7 +110,6 @@ static void delay(volatile uint32_t nof)
 
 int main(void)
 {
-	uint32_t msgCount = 0;
 	SystemCoreClockUpdate();
 	InitGPIO();
 	Init_UART1(BAUD_RATE);
@@ -128,6 +122,7 @@ int main(void)
 	special_event_flag = osEventFlagsNew(NULL);
 	init_light_flag = osEventFlagsNew(NULL);
 	init_audio_flag = osEventFlagsNew(NULL);
+	
 	osThreadNew(tBrain, NULL, NULL);
 	osThreadNew(tMotor, NULL, NULL);
 	osThreadNew(tLed, NULL, NULL);
