@@ -17,7 +17,7 @@
 #define FAST 100
 #define SLOW 75
 
-#define FREQ_MOD(x) (375000/x)
+#define FREQ_MOD(x) (375000/x)17
 
 int PWM(int);
 

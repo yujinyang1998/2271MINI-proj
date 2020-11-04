@@ -1,5 +1,14 @@
 #include "MKL25Z4.h" 
 #define PTB0_Pin 0  //buzzer
+#define PTB8_PIN 8
+#define PTB9_PIN 9
+#define PTB10_PIN 10
+#define PTB11_PIN 11
+#define PTE2_PIN 2
+#define PTE3_PIN 3
+#define PTE4_PIN 4
+#define PTE5_PIN 5
+#define MASK(x) (1 << (x))
 
 void InitBuzzer(void) {
 	// Configure MUX settings to make pins to ALT3: TPM1_CH0 and TPM1_CH1
@@ -81,3 +90,33 @@ void InitGPIO(void)
 	SIM->SCGC5 |= ((SIM_SCGC5_PORTB_MASK) | (SIM_SCGC5_PORTD_MASK));
 
 }
+
+void InitLed(void) {
+	// Configure MUX settings to make pins to ALT3: TPM1_CH0 and TPM1_CH1
+  // Enable Clock to PORTB and PORTE
+	SIM->SCGC5 |= ((SIM_SCGC5_PORTB_MASK) | (SIM_SCGC5_PORTE_MASK));
+  
+  // Configure Mode 1 for PWM pin operation
+  // Alternative 1 GPIO
+  PORTB->PCR[PTB8_PIN] &= ~PORT_PCR_MUX_MASK;
+  PORTB->PCR[PTB8_PIN] |= PORT_PCR_MUX(1);
+  PORTB->PCR[PTB9_PIN] &= ~PORT_PCR_MUX_MASK;
+  PORTB->PCR[PTB9_PIN] |= PORT_PCR_MUX(1);
+	PORTB->PCR[PTB10_PIN] &= ~PORT_PCR_MUX_MASK;
+  PORTB->PCR[PTB10_PIN] |= PORT_PCR_MUX(1);
+	PORTB->PCR[PTB11_PIN] &= ~PORT_PCR_MUX_MASK;
+  PORTB->PCR[PTB11_PIN] |= PORT_PCR_MUX(1);
+	
+	PORTE->PCR[PTE2_PIN] &= ~PORT_PCR_MUX_MASK;
+  PORTE->PCR[PTE2_PIN] |= PORT_PCR_MUX(1);
+	PORTE->PCR[PTE3_PIN] &= ~PORT_PCR_MUX_MASK;
+  PORTE->PCR[PTE3_PIN] |= PORT_PCR_MUX(1);
+	PORTE->PCR[PTE4_PIN] &= ~PORT_PCR_MUX_MASK;
+  PORTE->PCR[PTE4_PIN] |= PORT_PCR_MUX(1);
+	PORTE->PCR[PTE5_PIN] &= ~PORT_PCR_MUX_MASK;
+  PORTE->PCR[PTE5_PIN] |= PORT_PCR_MUX(1);
+	
+	PTB->PDDR |= (MASK(PTB8_PIN)|MASK(PTB9_PIN)|MASK(PTB10_PIN)|MASK(PTB11_PIN));
+	PTE->PDDR |= (MASK(PTE2_PIN)|MASK(PTE3_PIN)|MASK(PTE4_PIN)|MASK(PTE5_PIN));
+}
+

@@ -19,13 +19,6 @@
 
 #define FREQ_MOD(x) (375000/x)
 #define BAUD_RATE 9600
-#define PTD0_Pin 0 	//Front Left
-#define PTD1_Pin 1	//Front Right
-#define PTD2_Pin 2	//Back Left
-#define PTD3_Pin 3	//Back Right
-#define PTC1_Pin 1  //buzzer
-#define PTC2_Pin 2  //buzzer
-#define MASK(x) (1 << (x))
 #define CMDMASK (3 << 6)
 #define DATAMASK (0b111111)
 
@@ -38,43 +31,6 @@ osEventFlagsId_t init_audio_flag;  		// Only raised when bluetooth start
 volatile unsigned char rxData = 0;
 volatile uint8_t dir = 0;
 
-#define PTB8_PIN 8
-#define PTB9_PIN 9
-#define PTB10_PIN 10
-#define PTB11_PIN 11
-#define PTE2_PIN 2
-#define PTE3_PIN 3
-#define PTE4_PIN 4
-#define PTE5_PIN 5
-
-void InitLed(void) {
-	// Configure MUX settings to make pins to ALT3: TPM1_CH0 and TPM1_CH1
-  // Enable Clock to PORTB and PORTE
-	SIM->SCGC5 |= ((SIM_SCGC5_PORTB_MASK) | (SIM_SCGC5_PORTE_MASK));
-  
-  // Configure Mode 1 for PWM pin operation
-  // Alternative 1 GPIO
-  PORTB->PCR[PTB8_PIN] &= ~PORT_PCR_MUX_MASK;
-  PORTB->PCR[PTB8_PIN] |= PORT_PCR_MUX(1);
-  PORTB->PCR[PTB9_PIN] &= ~PORT_PCR_MUX_MASK;
-  PORTB->PCR[PTB9_PIN] |= PORT_PCR_MUX(1);
-	PORTB->PCR[PTB10_PIN] &= ~PORT_PCR_MUX_MASK;
-  PORTB->PCR[PTB10_PIN] |= PORT_PCR_MUX(1);
-	PORTB->PCR[PTB11_PIN] &= ~PORT_PCR_MUX_MASK;
-  PORTB->PCR[PTB11_PIN] |= PORT_PCR_MUX(1);
-	
-	PORTE->PCR[PTE2_PIN] &= ~PORT_PCR_MUX_MASK;
-  PORTE->PCR[PTE2_PIN] |= PORT_PCR_MUX(1);
-	PORTE->PCR[PTE3_PIN] &= ~PORT_PCR_MUX_MASK;
-  PORTE->PCR[PTE3_PIN] |= PORT_PCR_MUX(1);
-	PORTE->PCR[PTE4_PIN] &= ~PORT_PCR_MUX_MASK;
-  PORTE->PCR[PTE4_PIN] |= PORT_PCR_MUX(1);
-	PORTE->PCR[PTE5_PIN] &= ~PORT_PCR_MUX_MASK;
-  PORTE->PCR[PTE5_PIN] |= PORT_PCR_MUX(1);
-	
-	PTB->PDDR |= (MASK(PTB8_PIN)|MASK(PTB9_PIN)|MASK(PTB10_PIN)|MASK(PTB11_PIN));
-	PTE->PDDR |= (MASK(PTE2_PIN)|MASK(PTE3_PIN)|MASK(PTE4_PIN)|MASK(PTE5_PIN));
-}
 
 //DONE
 void UART1_IRQHandler(void)
@@ -92,13 +48,14 @@ void tBrain (void *argument) {
 	for(;;) {
 		osEventFlagsWait(dataFlag, 0x0001, osFlagsWaitAny, osWaitForever);
 		osEventFlagsClear(dataFlag, 0x0001);
-		if (rxData >> 5 == 1) {
+		if (rxData & (1<<5)) {
 			osEventFlagsSet(special_event_flag, 0x0004);
 		}
-		if (rxData & 0b1) {
-			dir |= (rxData & 0b1111);
+		
+		if (rxData & 0b10000) {
+			dir |= (rxData & 0b00011111);
 		} else {
-			dir &= ~(rxData & 0b1111);
+			dir = 0;
 		}
 		
 		osEventFlagsSet(motorFlag, 0x0001);
@@ -107,12 +64,14 @@ void tBrain (void *argument) {
 
 void tLed (void *argument) {
 	for(;;) {
-		PORTE->PCR[PTE2_PIN] = 1;
+		PTE->PDOR = MASK(PTE2_PIN);
+		PTB->PDOR = MASK(PTB11_PIN);
 	}
 }
 
 void tMotor (void *argument) {
 	for(;;) {
+		osEventFlagsWait(motorFlag, 0x0001, osFlagsWaitAny, osWaitForever);
 		move(dir);
 	}
 }
@@ -123,13 +82,13 @@ void tAudio (void *argument) {
 	for(; ;) {
 			int noteDuration = 750 / noteDurations[thisNote];
 			int freq = 375000 / melody[thisNote];
-			TPM0->MOD = freq;
-			TPM0_C1V =  0.05*freq;
-			osDelay(noteDuration*0.8);
+			TPM1->MOD = freq;
+			TPM1_C0V =  0.05*freq;
+			osDelay(noteDuration*0.3);
 			int pauseBetweenNotes = noteDuration * 1;
-			osDelay(pauseBetweenNotes*0.8);
-			TPM0->MOD=0;
-			TPM0_C1V = 0;
+			osDelay(pauseBetweenNotes*0.3);
+			TPM1->MOD=0;
+			TPM1_C0V = 0;
 			
 			if(thisNote<112){ 
 				thisNote++;
@@ -139,20 +98,10 @@ void tAudio (void *argument) {
 	}
 }
 
-/* Delay Function */
-static void delay(volatile uint32_t nof)
-{
-	while (nof != 0)
-	{
-		__asm("NOP");
-		nof--;
-	}
-}
-
 int main(void)
 {
 	SystemCoreClockUpdate();
-	InitGPIO();
+	InitLed();
 	Init_UART1(BAUD_RATE);
 	InitMotor();
 	InitBuzzer();
