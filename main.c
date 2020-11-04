@@ -76,6 +76,9 @@ void InitLed(void) {
   PORTE->PCR[PTE4_PIN] |= PORT_PCR_MUX(1);
 	PORTE->PCR[PTE5_PIN] &= ~PORT_PCR_MUX_MASK;
   PORTE->PCR[PTE5_PIN] |= PORT_PCR_MUX(1);
+	
+	PTB->PDDR |= (MASK(PTB8_PIN)|MASK(PTB9_PIN)|MASK(PTB10_PIN)|MASK(PTB11_PIN));
+	PTE->PDDR |= (MASK(PTE2_PIN)|MASK(PTE3_PIN)|MASK(PTE4_PIN)|MASK(PTE5_PIN));
 }
 
 //DONE
@@ -109,7 +112,7 @@ void tBrain (void *argument) {
 
 void tLed (void *argument) {
 	for(;;) {
-		
+		PORTE->PCR[PTE2_PIN] = 1;
 	}
 }
 
