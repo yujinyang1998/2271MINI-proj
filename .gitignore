@@ -37,3 +37,14 @@ RTE/Device/MKL25Z128xxx4/system_MKL25Z4.c
 Objects/motor.crf
 Objects/motor.d
 Objects/motor.o
+EventRecorderStub.scvd
+FEAFAE.uvguix.yujin
+FEAFAE.uvoptx
+FEAFAE.uvprojx
+Listings/FEAFAE.map
+Objects/ExtDll.iex
+Objects/FEAFAE.axf
+Objects/FEAFAE.build_log.htm
+Objects/FEAFAE.htm
+Objects/FEAFAE.lnp
+Objects/FEAFAE_Target 1.dep
