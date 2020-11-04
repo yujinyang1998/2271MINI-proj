@@ -4,7 +4,8 @@
 #include "cmsis_os2.h"
 #include "audio.h"
 #include "init.h"
-#pragma once
+#pragmaonce
+
 osThreadId_t tBrainThreadId, tLedThreadId, tAudioThreadId, tMotorThreadId;
 osMessageQueueId_t tLedMsgQueId, tAudioMsgQueId, tBrainMsgQueId, tMotorMsgQueId;
 
