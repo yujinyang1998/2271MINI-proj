@@ -15,9 +15,8 @@
 #define REVERSE_LEFT 22
 #define REVERSE_RIGHT 26
 #define FAST 100
-#define SLOW 75
-
-#define FREQ_MOD(x) (375000/x)17
+#define MEDIUM 75
+#define SLOW 25
 
 int PWM(int);
 

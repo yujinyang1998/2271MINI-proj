@@ -48,3 +48,6 @@ Objects/FEAFAE.build_log.htm
 Objects/FEAFAE.htm
 Objects/FEAFAE.lnp
 Objects/FEAFAE_Target 1.dep
+Objects/led.crf
+Objects/led.d
+Objects/led.o

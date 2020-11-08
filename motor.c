@@ -15,37 +15,37 @@ void move(int dir) {
 			TPM0_C2V = 0;
 			TPM0_C3V = PWM(FAST);
 	  	break;
-	case(ROBOT_LEFT):
+	case(ROBOT_RIGHT):
 			TPM0_C0V = 0;
-			TPM0_C1V = PWM(FAST);
-			TPM0_C2V = PWM(FAST);
+			TPM0_C1V = PWM(MEDIUM);
+			TPM0_C2V = PWM(MEDIUM);
 			TPM0_C3V = 0;
 		  break;
-	case(ROBOT_RIGHT):
-			TPM0_C0V = PWM(FAST);
+	case(ROBOT_LEFT):
+			TPM0_C0V = PWM(MEDIUM);
 			TPM0_C1V = 0;
 			TPM0_C2V = 0;
-			TPM0_C3V = PWM(FAST);
+			TPM0_C3V = PWM(MEDIUM);
 			break;
-	case(FORWARD_LEFT):
+	case(FORWARD_RIGHT):
 			TPM0_C0V = PWM(SLOW);
 			TPM0_C1V = 0;
 			TPM0_C2V = PWM(FAST);
 			TPM0_C3V = 0;
 			break;
-	case(FORWARD_RIGHT):
+	case(FORWARD_LEFT):
 			TPM0_C0V = PWM(FAST);
 			TPM0_C1V = 0;
 			TPM0_C2V = PWM(SLOW);
 			TPM0_C3V = 0;
 			break;
-	case(REVERSE_LEFT):
+	case(REVERSE_RIGHT):
 			TPM0_C0V = 0;
 			TPM0_C1V = PWM(SLOW);
 			TPM0_C2V = 0;
 			TPM0_C3V = PWM(FAST);
 	  	break;
-	case(REVERSE_RIGHT):
+	case(REVERSE_LEFT):
 			TPM0_C0V = 0;
 			TPM0_C1V = PWM(FAST);
 			TPM0_C2V = 0;

@@ -5,6 +5,7 @@
 #include "audio.h"
 #include "init.h"
 #include "motor.h"
+#include "led.h"
 #pragma once
 
 #define CONNECTION_START 6
@@ -22,11 +23,11 @@
 #define CMDMASK (3 << 6)
 #define DATAMASK (0b111111)
 
-osEventFlagsId_t dataFlag;						// To Run tBrain when new data is received
-osEventFlagsId_t motorFlag;						// To Run tControl after decoding of data
-osEventFlagsId_t special_event_flag;	// For Connection and ending buzzer
-osEventFlagsId_t init_light_flag;  		// Only raised when bluetooth start
-osEventFlagsId_t init_audio_flag;  		// Only raised when bluetooth start
+osEventFlagsId_t dataFlag;						// Trigger when new data is recieved
+osEventFlagsId_t motorFlag;						// Trigger when tBrain processes data
+osEventFlagsId_t startEndFlag;	      // Trigger when connected start and end.
+osEventFlagsId_t ledFlag;  		        // Trigger when connected to start the LED sequence
+osEventFlagsId_t audioFlag;  		      // Trigger when connected to play the audio
 
 volatile unsigned char rxData = 0;
 volatile uint8_t dir = 0;
@@ -48,8 +49,9 @@ void tBrain (void *argument) {
 	for(;;) {
 		osEventFlagsWait(dataFlag, 0x0001, osFlagsWaitAny, osWaitForever);
 		osEventFlagsClear(dataFlag, 0x0001);
-		if (rxData & (1<<5)) {
-			osEventFlagsSet(special_event_flag, 0x0004);
+		
+		if (rxData == 32) {
+			osEventFlagsSet(startEndFlag, 0x0001);
 		}
 		
 		if (rxData & 0b10000) {
@@ -63,9 +65,33 @@ void tBrain (void *argument) {
 }
 
 void tLed (void *argument) {
+	int i = 0;
+	int flashMask = 0xFF;
+	osEventFlagsWait(ledFlag, 0x0001, osFlagsWaitAny, osWaitForever);
+	
+	for(int j = 0; j < 2; j++) {
+		GreenLED(0xFF);
+		osDelay(500);
+		GreenLED(0);
+		osDelay(500);
+	}
+	
 	for(;;) {
-		PTE->PDOR = MASK(PTE2_PIN);
-		PTB->PDOR = MASK(PTB11_PIN);
+		if(dir == 0) {
+			RedLED(flashMask);
+			GreenLED(0xFF);
+			osDelay(250);
+		} else{
+			GreenLED(MASK(i));
+			RedLED(flashMask);
+			osDelay(500);
+			if(i == 7){
+				i = 0;
+			} else {
+				i++;
+			}
+		}
+		flashMask = ~flashMask;
 	}
 }
 
@@ -76,10 +102,25 @@ void tMotor (void *argument) {
 	}
 }
 
+void tStartEnd (void *argument) {
+	for(;;) {
+		osEventFlagsWait(startEndFlag, 0x0001, osFlagsWaitAny, osWaitForever);
+		if (rxData == 32){
+			osEventFlagsSet(ledFlag, 0x0001);
+			osEventFlagsSet(audioFlag, 0x0001);
+		} else if (rxData == 64) {
+			
+		}
+	}
+}
+
 void tAudio (void *argument) {
 	int thisNote = 0;
-
+	osEventFlagsWait(audioFlag, 0x0001, osFlagsWaitAny, osWaitForever);
 	for(; ;) {
+			if(rxData == 64) {
+				osDelay(1000000);
+			}
 			int noteDuration = 750 / noteDurations[thisNote];
 			int freq = 375000 / melody[thisNote];
 			TPM1->MOD = freq;
@@ -109,14 +150,15 @@ int main(void)
 	osKernelInitialize();
 	motorFlag = osEventFlagsNew(NULL);
 	dataFlag = osEventFlagsNew(NULL);
-	special_event_flag = osEventFlagsNew(NULL);
-	init_light_flag = osEventFlagsNew(NULL);
-	init_audio_flag = osEventFlagsNew(NULL);
+	startEndFlag = osEventFlagsNew(NULL);
+	ledFlag = osEventFlagsNew(NULL);
+	audioFlag = osEventFlagsNew(NULL);
 	
 	osThreadNew(tBrain, NULL, NULL);
 	osThreadNew(tMotor, NULL, NULL);
 	osThreadNew(tLed, NULL, NULL);
 	osThreadNew(tAudio, NULL, NULL);
+	osThreadNew(tStartEnd, NULL, NULL);
 
 	osKernelStart();
 	for(;;){}
