@@ -50,7 +50,7 @@ void tBrain (void *argument) {
 		osEventFlagsWait(dataFlag, 0x0001, osFlagsWaitAny, osWaitForever);
 		osEventFlagsClear(dataFlag, 0x0001);
 		
-		if (rxData == 32) {
+		if (rxData == 32 | rxData == 64) {
 			osEventFlagsSet(startEndFlag, 0x0001);
 		}
 		
@@ -106,10 +106,22 @@ void tStartEnd (void *argument) {
 	for(;;) {
 		osEventFlagsWait(startEndFlag, 0x0001, osFlagsWaitAny, osWaitForever);
 		if (rxData == 32){
+			for(int i = 0; i < startSize; i++) {
+				int freq = 375000 / start[i];
+				TPM1->MOD = freq;
+				TPM1_C0V =  0.05*freq;
+				osDelay(150);
+			}
 			osEventFlagsSet(ledFlag, 0x0001);
 			osEventFlagsSet(audioFlag, 0x0001);
 		} else if (rxData == 64) {
-			
+			for(int i = 0; i < stopSize; i++) {
+				int freq = 375000 / stop[i];
+				TPM1->MOD = freq;
+				TPM1_C0V =  0.05*freq;
+				osDelay(150);
+
+			}
 		}
 	}
 }
@@ -119,23 +131,22 @@ void tAudio (void *argument) {
 	osEventFlagsWait(audioFlag, 0x0001, osFlagsWaitAny, osWaitForever);
 	for(; ;) {
 			if(rxData == 64) {
-				osDelay(1000000);
-			}
-			int noteDuration = 750 / noteDurations[thisNote];
-			int freq = 375000 / melody[thisNote];
-			TPM1->MOD = freq;
-			TPM1_C0V =  0.05*freq;
-			osDelay(noteDuration*0.3);
-			int pauseBetweenNotes = noteDuration * 1;
-			osDelay(pauseBetweenNotes*0.3);
-			TPM1->MOD=0;
-			TPM1_C0V = 0;
-			
-			if(thisNote<112){ 
-				thisNote++;
+				TPM1->MOD=0;
+				TPM1_C0V = 0;
 			} else {
-				thisNote = 0;
-			}
+				int freq = 375000 / melody[thisNote];
+				TPM1->MOD = freq;
+				TPM1_C0V =  0.05*freq;
+				osDelay(100);
+				if(thisNote<112){ 
+					thisNote++;
+				} else {
+					thisNote = 0;
+				}
+				TPM1->MOD=0;
+				TPM1_C0V = 0;
+				osDelay(100);
+		}
 	}
 }
 
