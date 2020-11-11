@@ -55,9 +55,9 @@ void tBrain (void *argument) {
 		}
 		
 		if (rxData & 0b10000) {
-			dir |= (rxData & 0b00011111);
+			dir |= (rxData & 0b1111);
 		} else {
-			dir = 0;
+			dir &= ~(rxData & 0b1111);
 		}
 		
 		osEventFlagsSet(motorFlag, 0x0001);
