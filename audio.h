@@ -126,43 +126,7 @@ int melody[] = {
   NOTE_A5, NOTE_AS5, NOTE_A5, NOTE_AS5
  };
 
-int start[] = {NOTE_B0, 0, NOTE_B0, 0, NOTE_B0, 0,NOTE_B0, 0, NOTE_B0, 0};
-
-int stop[] = {NOTE_DS8, 0, NOTE_DS8, 0, NOTE_DS8, 0, NOTE_DS8, 0, NOTE_DS8, 0,};
-
-// note durations: 4 = quarter note, 8 = eighth note, etc.:
-int noteDurations[] = {
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  4,4,4,4,
-  };
+int start[] = {NOTE_DS6,0,NOTE_DS5,0,0,NOTE_CS5,0,0,0,NOTE_DS6,0,NOTE_AS5,NOTE_AS5,NOTE_AS5, 0};
+int startSize = 15;
+int stop[] = {NOTE_GS6,0,NOTE_DS6,0,NOTE_GS5,0,NOTE_AS5, 0};
+int stopSize = 8;
