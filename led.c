@@ -1,7 +1,7 @@
 #include "MKL25Z4.h" 
 #include "led.h"
 
-void GreenLED(int input) {
+void RedLED(int input) {
 	int PTD_IN  = (input & 0b11000000) >> 6;
 	int PTA_IN  = (input & 0b00110000) >> 4;
 	int PTC_IN1 = (input & 0b00001100) >> 2;
@@ -16,7 +16,7 @@ void GreenLED(int input) {
 	PTC->PDOR |= (PTC_IN2 << 12);
 }
 
-void RedLED(int input){
+void GreenLED(int input){
 	int PTB_IN = input & 0x0F;
 	int PTE_IN = (input & 0xF0) >> 4;
 	

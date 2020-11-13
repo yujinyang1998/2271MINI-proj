@@ -16,7 +16,7 @@
 #define REVERSE_RIGHT 10 //26 //11010
 #define FAST 100
 #define MEDIUM 75
-#define SLOW 25
+#define SLOW 40
 
 int PWM(int);
 
