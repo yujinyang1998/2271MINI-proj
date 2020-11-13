@@ -17,15 +17,15 @@ void move(int dir) {
 	  	break;
 	case(ROBOT_RIGHT):
 			TPM0_C0V = 0;
-			TPM0_C1V = PWM(FAST);
-			TPM0_C2V = PWM(FAST);
+			TPM0_C1V = PWM(MEDIUM);
+			TPM0_C2V = PWM(MEDIUM);
 			TPM0_C3V = 0;
 		  break;
 	case(ROBOT_LEFT):
-			TPM0_C0V = PWM(FAST);
+			TPM0_C0V = PWM(MEDIUM);
 			TPM0_C1V = 0;
 			TPM0_C2V = 0;
-			TPM0_C3V = PWM(FAST);
+			TPM0_C3V = PWM(MEDIUM);
 			break;
 	case(FORWARD_RIGHT):
 			TPM0_C0V = PWM(SLOW);
